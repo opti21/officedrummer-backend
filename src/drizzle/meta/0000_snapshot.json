@@ -1,0 +1,380 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "5",
+  "dialect": "mysql",
+  "tables": {
+    "officedrummer-frontend-new_account": {
+      "name": "officedrummer-frontend-new_account",
+      "columns": {
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "autoincrement": false,
+          "name": "type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "autoincrement": false,
+          "name": "provider",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "providerAccountId": {
+          "autoincrement": false,
+          "name": "providerAccountId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "refresh_token": {
+          "autoincrement": false,
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "access_token": {
+          "autoincrement": false,
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "autoincrement": false,
+          "name": "expires_at",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token_type": {
+          "autoincrement": false,
+          "name": "token_type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scope": {
+          "autoincrement": false,
+          "name": "scope",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "id_token": {
+          "autoincrement": false,
+          "name": "id_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "session_state": {
+          "autoincrement": false,
+          "name": "session_state",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "officedrummer-frontend-new_account_provider_providerAccountId_pk": {
+          "name": "officedrummer-frontend-new_account_provider_providerAccountId_pk",
+          "columns": [
+            "provider",
+            "providerAccountId"
+          ]
+        }
+      },
+      "indexes": {
+        "userId_idx": {
+          "name": "userId_idx",
+          "columns": [
+            "userId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "officedrummer-frontend-new_requests": {
+      "name": "officedrummer-frontend-new_requests",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "twitchId": {
+          "autoincrement": false,
+          "name": "twitchId",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "requestText": {
+          "autoincrement": false,
+          "name": "requestText",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "default": "CURRENT_TIMESTAMP",
+          "autoincrement": false,
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "onUpdate": true
+        },
+        "sliceSize": {
+          "autoincrement": false,
+          "name": "sliceSize",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "officedrummer-frontend-new_requests_id_pk": {
+          "name": "officedrummer-frontend-new_requests_id_pk",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "indexes": {
+        "twitchId_idx": {
+          "name": "twitchId_idx",
+          "columns": [
+            "twitchId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "officedrummer-frontend-new_session": {
+      "name": "officedrummer-frontend-new_session",
+      "columns": {
+        "sessionToken": {
+          "autoincrement": false,
+          "name": "sessionToken",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires": {
+          "autoincrement": false,
+          "name": "expires",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "officedrummer-frontend-new_session_sessionToken_pk": {
+          "name": "officedrummer-frontend-new_session_sessionToken_pk",
+          "columns": [
+            "sessionToken"
+          ]
+        }
+      },
+      "indexes": {
+        "userId_idx": {
+          "name": "userId_idx",
+          "columns": [
+            "userId"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "officedrummer-frontend-new_user": {
+      "name": "officedrummer-frontend-new_user",
+      "columns": {
+        "id": {
+          "autoincrement": false,
+          "name": "id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "autoincrement": false,
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "emailVerified": {
+          "default": "CURRENT_TIMESTAMP(3)",
+          "autoincrement": false,
+          "name": "emailVerified",
+          "type": "timestamp(3)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "image": {
+          "autoincrement": false,
+          "name": "image",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {
+        "officedrummer-frontend-new_user_id_pk": {
+          "name": "officedrummer-frontend-new_user_id_pk",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "officedrummer-frontend-new_verificationToken": {
+      "name": "officedrummer-frontend-new_verificationToken",
+      "columns": {
+        "identifier": {
+          "autoincrement": false,
+          "name": "identifier",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token": {
+          "autoincrement": false,
+          "name": "token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires": {
+          "autoincrement": false,
+          "name": "expires",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "officedrummer-frontend-new_verificationToken_identifier_token_pk": {
+          "name": "officedrummer-frontend-new_verificationToken_identifier_token_pk",
+          "columns": [
+            "identifier",
+            "token"
+          ]
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    },
+    "officedrummer-frontend-new_wheelStatus": {
+      "name": "officedrummer-frontend-new_wheelStatus",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "autoincrement": false,
+          "name": "status",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "default": "CURRENT_TIMESTAMP",
+          "autoincrement": false,
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updatedAt": {
+          "autoincrement": false,
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "onUpdate": true
+        }
+      },
+      "compositePrimaryKeys": {
+        "officedrummer-frontend-new_wheelStatus_id_pk": {
+          "name": "officedrummer-frontend-new_wheelStatus_id_pk",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "indexes": {
+        "status_idx": {
+          "name": "status_idx",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}
