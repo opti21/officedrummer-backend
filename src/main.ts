@@ -14,7 +14,7 @@ const twitchClient = new tmi.Client({
 		username: 'pepega_bot21',
 		password: env.TWITCH_PASS
 	},
-	channels: [ 'opti_21' ]
+	channels: [ 'officedrummer' ]
 });
 
 twitchClient.connect().catch(console.error);
