@@ -14,7 +14,7 @@ const twitchClient = new tmi.Client({
 		username: 'pepega_bot21',
 		password: env.TWITCH_PASS
 	},
-	channels: [ 'officedrummer' ]
+	channels: [ 'opti_21' ]
 });
 
 twitchClient.connect().catch(console.error);
@@ -30,7 +30,13 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       const userTwitchId = tags["user-id"];
       const twitchUsername = tags.username;
 
-      if (!userTwitchId || !twitchUsername) {
+      if (!userTwitchId) {
+        console.log("no twitch id");
+        return;
+      }
+
+      if (!twitchUsername) {
+        console.log("no twitch username");
         return;
       }
 
