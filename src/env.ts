@@ -18,6 +18,7 @@ export const env = createEnv({
     TWITCH_CLIENT_ID: z.string().min(1),
     TWITCH_CLIENT_SECRET: z.string().min(1),
     TWITCH_PASS: z.string().min(1),
+    TWITCH_CHANNEL: z.string().min(1),
     OFD_USER_ID: z.string().min(1),
   },
   runtimeEnv: process.env,
