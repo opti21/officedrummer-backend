@@ -121,7 +121,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       const requestText = message.split(' ').slice(2).join(' ');
 
       if (!requestText) {
-        twitchClient.say(channel, `@${tags.username} you forgot your request! Type !modadd <request> to add your request`);
+        twitchClient.say(channel, `@${tags.username} there's no request! Type !modadd <user> <request> to add the request`);
         return;
       }
 
