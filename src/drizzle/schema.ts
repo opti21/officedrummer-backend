@@ -1,4 +1,4 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, primaryKey, varchar, text, int, bigint, timestamp } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, primaryKey, varchar, text, int, bigint, timestamp, tinyint } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 
@@ -30,6 +30,7 @@ export const officedrummerRequests = mysqlTable("officedrummer_requests", {
 	createdAt: timestamp("created_at", { mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	updatedAt: timestamp("updatedAt", { mode: 'string' }).onUpdateNow(),
 	sliceSize: int("sliceSize"),
+	requestPlayed: tinyint("request_played").default(0),
 },
 (table) => {
 	return {

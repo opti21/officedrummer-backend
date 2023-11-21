@@ -62,8 +62,10 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       })
 
       if (existingRequest) {
-        twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
-        return;
+        if (existingRequest.requestPlayed) {
+          return twitchClient.say(channel, `@${tags.username} you've already had your request played!`);
+        }
+        return twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
       }
 
       await db.insert(officedrummerRequests).values({
