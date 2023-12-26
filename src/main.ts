@@ -100,6 +100,8 @@ twitchClient.on('message', async (channel, tags, message, self) => {
 
       await db.delete(officedrummerRequests).where(eq(officedrummerRequests.id, existingRequest.id))
 
+      twitchClient.say(channel, `@${tags.username} your request has been removed from the queue!`);
+
     }
   }
 
@@ -145,7 +147,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         console.log(err);
       })
 
-      twitchClient.say(channel, `@${tags.username} your request has been added to the queue!`);
+      twitchClient.say(channel, `@${tags.username} the request has been added to the queue!`);
 
     }
   }
@@ -170,6 +172,8 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       }
 
       await db.delete(officedrummerRequests).where(eq(officedrummerRequests.id, existingRequest.id))
+
+      twitchClient.say(channel, `@${tags.username} the request has been removed from the queue!`);
 
     }
   }
