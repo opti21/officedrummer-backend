@@ -130,11 +130,11 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       }
 
       const existingRequest = await db.query.officedrummerRequests.findFirst({
-        where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
+        where: (requests, { eq }) => eq(requests.twitchId, usernameToUse),
       })
 
       if (existingRequest) {
-        twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
+        twitchClient.say(channel, `@${tags.username} you already have a request in the queue for @${usernameToUse}!`);
         return;
       }
 
@@ -147,7 +147,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         console.log(err);
       })
 
-      twitchClient.say(channel, `@${tags.username} the request has been added to the queue!`);
+      twitchClient.say(channel, `@${tags.username} the request for @${usernameToUse} has been added to the queue!`);
 
     }
   }
@@ -167,13 +167,13 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       })
 
       if (!existingRequest) {
-        twitchClient.say(channel, `@${tags.username} that user doesn't have a request in the queue!`);
+        twitchClient.say(channel, `@${tags.username} the user @${usernameToRemove} doesn't have a request in the queue!`);
         return;
       }
 
       await db.delete(officedrummerRequests).where(eq(officedrummerRequests.id, existingRequest.id))
 
-      twitchClient.say(channel, `@${tags.username} the request has been removed from the queue!`);
+      twitchClient.say(channel, `@${tags.username} the request for @${usernameToRemove} has been removed from the queue!`);
 
     }
   }
