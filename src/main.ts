@@ -40,6 +40,17 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
+      const existingRequest = await db.query.officedrummerRequests.findFirst({
+        where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
+      })
+
+      if (existingRequest) {
+        if (existingRequest.requestPlayed) {
+          return twitchClient.say(channel, `@${tags.username} you've already had your request played!`);
+        }
+        return twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
+      }
+
       const requestText = message.split(' ').slice(1).join(' ');
 
       if (!requestText) {
@@ -52,21 +63,10 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      // sanitize the request text and make sure it does not have any html or special characters expect for spaces and dashes and colons and periods and commas and apostrophes
+      // sanitize the request text and make sure it does not have any html or special characters expect for:
+        // spaces, dashes, colons, periods, commas, apostrophes, and underscores
       // replace all the special characters with nothing
-
-      const sanitizedRequestText = requestText.replace(/[^a-zA-Z0-9\s\-\:\.\,\']/g, '');
-
-      const existingRequest = await db.query.officedrummerRequests.findFirst({
-        where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
-      })
-
-      if (existingRequest) {
-        if (existingRequest.requestPlayed) {
-          return twitchClient.say(channel, `@${tags.username} you've already had your request played!`);
-        }
-        return twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
-      }
+      const sanitizedRequestText = requestText.replace(/[^a-zA-Z0-9\s\-\:\.\,\'\_]/g, '');
 
       await db.insert(officedrummerRequests).values({
         twitchId: userTwitchId,
@@ -115,10 +115,20 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      const usernameToUse = message.split(' ')[1];
+      const usernameInput = message.split(' ')[1];
+      const usernameToUse = usernameInput.replace(/[\@]/g, '');
 
       if (!usernameToUse) {
         twitchClient.say(channel, `@${tags.username} you forgot to add the user! Type !modadd <user> <request> to add your request`);
+        return;
+      }
+
+      const existingRequest = await db.query.officedrummerRequests.findFirst({
+        where: (requests, { eq }) => eq(requests.twitchId, usernameToUse),
+      })
+
+      if (existingRequest) {
+        twitchClient.say(channel, `@${tags.username} you already have a request in the queue for @${usernameToUse}!`);
         return;
       }
 
@@ -129,25 +139,26 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      const existingRequest = await db.query.officedrummerRequests.findFirst({
-        where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
-      })
-
-      if (existingRequest) {
-        twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
+      if (requestText.length > 100) {
+        twitchClient.say(channel, `@${tags.username} your request is too long! Please keep it under 100 characters`);
         return;
       }
+
+      // sanitize the request text and make sure it does not have any html or special characters expect for:
+        // spaces, dashes, colons, periods, commas, apostrophes, and underscores
+      // replace all the special characters with nothing
+      const sanitizedRequestText = requestText.replace(/[^a-zA-Z0-9\s\-\:\.\,\'\_]/g, '');
 
       await db.insert(officedrummerRequests).values({
         twitchId: "0",
         twitchUser: usernameToUse as string,
-        requestText: requestText,
+        requestText: sanitizedRequestText,
       })
       .catch((err) => {
         console.log(err);
       })
 
-      twitchClient.say(channel, `@${tags.username} the request has been added to the queue!`);
+      twitchClient.say(channel, `@${tags.username} the request for @${usernameToUse} has been added to the queue!`);
 
     }
   }
@@ -155,25 +166,27 @@ twitchClient.on('message', async (channel, tags, message, self) => {
   if (command === '!modremove') {
     // check if the user is a mod
     if (tags.mod) {
-      const usernameToRemove = message.split(' ')[1];
+      const usernameInput = message.split(' ')[1];
 
-      if (!usernameToRemove) {
+      if (!usernameInput) {
         twitchClient.say(channel, `@${tags.username} you forgot to add the user! Type !modremove <user> to remove their request`);
         return;
       }
 
+      const usernameToUse = usernameInput.replace(/[\@]/g, '');
+
       const existingRequest = await db.query.officedrummerRequests.findFirst({
-        where: (requests, { eq }) => eq(requests.twitchUser, usernameToRemove),
+        where: (requests, { eq }) => eq(requests.twitchUser, usernameToUse),
       })
 
       if (!existingRequest) {
-        twitchClient.say(channel, `@${tags.username} that user doesn't have a request in the queue!`);
+        twitchClient.say(channel, `@${tags.username} the user @${usernameToUse} doesn't have a request in the queue!`);
         return;
       }
 
       await db.delete(officedrummerRequests).where(eq(officedrummerRequests.id, existingRequest.id))
 
-      twitchClient.say(channel, `@${tags.username} the request has been removed from the queue!`);
+      twitchClient.say(channel, `@${tags.username} the request for @${usernameToUse} has been removed from the queue!`);
 
     }
   }
@@ -193,5 +206,5 @@ app.get("/", async (req, res) => {
 app.listen(process.env.PORT ?? 3030, async () => {
 
   console.log("Server is running on port 3030");
-    
+
 });
