@@ -4,9 +4,9 @@ import { env } from "./env";
 import expressWs from "express-ws";
 
 import tmi from 'tmi.js';
-import { db } from "./db";
-import { officedrummerRequests } from "./drizzle/schema";
+import {requests } from "./db/drizzle/schema";
 import { eq } from "drizzle-orm";
+import { db } from "./db";
 
 const twitchClient = new tmi.Client({
 	options: { debug: true },
@@ -57,7 +57,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
 
       const sanitizedRequestText = requestText.replace(/[^a-zA-Z0-9\s\-\:\.\,\']/g, '');
 
-      const existingRequest = await db.query.officedrummerRequests.findFirst({
+      const existingRequest = await db.query.requests.findFirst({
         where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
       })
 
@@ -68,7 +68,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
       }
 
-      await db.insert(officedrummerRequests).values({
+      await db.insert(requests).values({
         twitchId: userTwitchId,
         twitchUser: tags.username as string,
         requestText: sanitizedRequestText,
@@ -89,7 +89,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      const existingRequest = await db.query.officedrummerRequests.findFirst({
+      const existingRequest = await db.query.requests.findFirst({
         where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
       })
 
@@ -98,7 +98,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      await db.delete(officedrummerRequests).where(eq(officedrummerRequests.id, existingRequest.id))
+      await db.delete(requests).where(eq(requests.id, existingRequest.id))
 
       twitchClient.say(channel, `@${tags.username} your request has been removed from the queue!`);
 
@@ -108,12 +108,6 @@ twitchClient.on('message', async (channel, tags, message, self) => {
   if(command === '!modadd') {
     // check if the user is a mod
     if (tags.mod) {
-      const userTwitchId = tags["user-id"];
-      const twitchUsername = tags.username;
-
-      if (!userTwitchId || !twitchUsername) {
-        return;
-      }
 
       const usernameToUse = message.split(' ')[1];
 
@@ -129,8 +123,8 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      const existingRequest = await db.query.officedrummerRequests.findFirst({
-        where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
+      const existingRequest = await db.query.requests.findFirst({
+        where: (requests, { eq }) => eq(requests.twitchUser, usernameToUse),
       })
 
       if (existingRequest) {
@@ -138,7 +132,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      await db.insert(officedrummerRequests).values({
+      await db.insert(requests).values({
         twitchId: "0",
         twitchUser: usernameToUse as string,
         requestText: requestText,
@@ -162,7 +156,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      const existingRequest = await db.query.officedrummerRequests.findFirst({
+      const existingRequest = await db.query.requests.findFirst({
         where: (requests, { eq }) => eq(requests.twitchUser, usernameToRemove),
       })
 
@@ -171,7 +165,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         return;
       }
 
-      await db.delete(officedrummerRequests).where(eq(officedrummerRequests.id, existingRequest.id))
+      await db.delete(requests).where(eq(requests.id, existingRequest.id))
 
       twitchClient.say(channel, `@${tags.username} the request has been removed from the queue!`);
 

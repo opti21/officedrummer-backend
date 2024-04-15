@@ -20,6 +20,8 @@ export const env = createEnv({
     TWITCH_PASS: z.string().min(1),
     TWITCH_CHANNEL: z.string().min(1),
     OFD_USER_ID: z.string().min(1),
+    TURSO_CONNECTION_URL: z.string().min(1),
+    TURSO_AUTH_TOKEN: z.string().min(1),
   },
   runtimeEnv: process.env,
 });
