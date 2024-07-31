@@ -26,60 +26,63 @@ twitchClient.on('message', async (channel, tags, message, self) => {
 
 	if(command === '!add') {
     // check if the user is subscribed to the channel
-    if (tags.subscriber) {
-      const userTwitchId = tags["user-id"];
-      const twitchUsername = tags.username;
-
-      if (!userTwitchId) {
-        console.log("no twitch id");
-        return;
-      }
-
-      if (!twitchUsername) {
-        console.log("no twitch username");
-        return;
-      }
-
-      const requestText = message.split(' ').slice(1).join(' ');
-
-      if (!requestText) {
-        twitchClient.say(channel, `@${tags.username} you forgot your request! Type !add <request> to add your request`);
-        return;
-      }
-
-      if (requestText.length > 100) {
-        twitchClient.say(channel, `@${tags.username} your request is too long! Please keep it under 100 characters`);
-        return;
-      }
-
-      // sanitize the request text and make sure it does not have any html or special characters expect for spaces and dashes and colons and periods and commas and apostrophes
-      // replace all the special characters with nothing
-
-      const sanitizedRequestText = requestText.replace(/[^a-zA-Z0-9\s\-\:\.\,\']/g, '');
-
-      const existingRequest = await db.query.requests.findFirst({
-        where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
-      })
-
-      if (existingRequest) {
-        if (existingRequest.requestPlayed) {
-          return twitchClient.say(channel, `@${tags.username} you've already had your request played!`);
-        }
-        return twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
-      }
-
-      await db.insert(requests).values({
-        twitchId: userTwitchId,
-        twitchUser: tags.username as string,
-        requestText: sanitizedRequestText,
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-
-      twitchClient.say(channel, `@${tags.username} your request has been added to the queue!`);
-
+    if (!tags.subscriber) {
+      twitchClient.say(channel, `@${tags.username} you need to be a subscriber to be added to the wheel!`);
+      return;
     }
+
+    const userTwitchId = tags["user-id"];
+    const twitchUsername = tags.username;
+
+    if (!userTwitchId) {
+      console.log("no twitch id");
+      return;
+    }
+
+    if (!twitchUsername) {
+      console.log("no twitch username");
+      return;
+    }
+
+    const requestText = message.split(' ').slice(1).join(' ');
+
+    if (!requestText) {
+      twitchClient.say(channel, `@${tags.username} you forgot your request! Type !add <request> to add your request`);
+      return;
+    }
+
+    if (requestText.length > 100) {
+      twitchClient.say(channel, `@${tags.username} your request is too long! Please keep it under 100 characters`);
+      return;
+    }
+
+    // sanitize the request text and make sure it does not have any html or special characters expect for spaces and dashes and colons and periods and commas and apostrophes
+    // replace all the special characters with nothing
+
+    const sanitizedRequestText = requestText.replace(/[^a-zA-Z0-9\s\-\:\.\,\']/g, '');
+
+    const existingRequest = await db.query.requests.findFirst({
+      where: (requests, { eq }) => eq(requests.twitchId, userTwitchId),
+    })
+
+    if (existingRequest) {
+      if (existingRequest.requestPlayed) {
+        return twitchClient.say(channel, `@${tags.username} you've already had your request played!`);
+      }
+      return twitchClient.say(channel, `@${tags.username} you already have a request in the wheel!`);
+    }
+
+    await db.insert(requests).values({
+      twitchId: userTwitchId,
+      twitchUser: tags.username as string,
+      requestText: sanitizedRequestText,
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+
+    twitchClient.say(channel, `@${tags.username} your request has been added to the wheel!`);
+
 	}
   if (command === '!remove') {
     // check if the user is subscribed to the channel
@@ -94,13 +97,13 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       })
 
       if (!existingRequest) {
-        twitchClient.say(channel, `@${tags.username} you don't have a request in the queue!`);
+        twitchClient.say(channel, `@${tags.username} you don't have a request in the wheel!`);
         return;
       }
 
       await db.delete(requests).where(eq(requests.id, existingRequest.id))
 
-      twitchClient.say(channel, `@${tags.username} your request has been removed from the queue!`);
+      twitchClient.say(channel, `@${tags.username} your request has been removed from the wheel!`);
 
     }
   }
@@ -128,7 +131,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       })
 
       if (existingRequest) {
-        twitchClient.say(channel, `@${tags.username} you already have a request in the queue!`);
+        twitchClient.say(channel, `@${tags.username} you already have a request in the wheel!`);
         return;
       }
 
@@ -141,7 +144,7 @@ twitchClient.on('message', async (channel, tags, message, self) => {
         console.log(err);
       })
 
-      twitchClient.say(channel, `@${tags.username} the request has been added to the queue!`);
+      twitchClient.say(channel, `@${tags.username} the request has been added to the wheel!`);
 
     }
   }
@@ -161,13 +164,13 @@ twitchClient.on('message', async (channel, tags, message, self) => {
       })
 
       if (!existingRequest) {
-        twitchClient.say(channel, `@${tags.username} that user doesn't have a request in the queue!`);
+        twitchClient.say(channel, `@${tags.username} that user doesn't have a request in the wheel!`);
         return;
       }
 
       await db.delete(requests).where(eq(requests.id, existingRequest.id))
 
-      twitchClient.say(channel, `@${tags.username} the request has been removed from the queue!`);
+      twitchClient.say(channel, `@${tags.username} the request has been removed from the wheel!`);
 
     }
   }
