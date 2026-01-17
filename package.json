@@ -1,6 +1,6 @@
 {
   "name": "officedrummer-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A go backend to listen to twitch Eventsub for officedrummer app",
   "main": "dist/src/main.js",
   "scripts": {

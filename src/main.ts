@@ -175,14 +175,21 @@ twitchClient.on('message', async (channel, tags, message, self) => {
     }
   }
 
-  if (command === '!railway-info') {
-    // check if the user is a mod
+  if (command === '!marco') {
+    const packageversion = "1.0.1"; // manually update this when releasing a new version
     if (tags.mod) {
-
-      twitchClient.say(channel, `@${tags.username} Project ID: ${process.env.RAILWAY_PROJECT_ID} Deployment ID: ${process.env.RAILWAY_DEPLOYMENT_ID} Replica: ${process.env.RAILWAY_REPLICA_ID} Region: ${process.env.RAILWAY_REPLICA_REGION}`);
-
+      twitchClient.say(channel, `@${tags.username} Polo! v${packageversion} Officedrummer is bald!`);
     }
   }
+
+  // if (command === '!railway-info') {
+  //   // check if the user is a mod
+  //   if (tags.mod) {
+
+  //     twitchClient.say(channel, `@${tags.username} Project ID: ${process.env.RAILWAY_PROJECT_ID} Deployment ID: ${process.env.RAILWAY_DEPLOYMENT_ID} Replica: ${process.env.RAILWAY_REPLICA_ID} Region: ${process.env.RAILWAY_REPLICA_REGION}`);
+
+  //   }
+  // }
 
 });
 
